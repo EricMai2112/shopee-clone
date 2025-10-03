@@ -1,23 +1,23 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import React from 'react'
 import { useForm, type RegisterOptions } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import { rules } from 'src/utils/rules'
+import Input from 'src/components/Input'
+import { schema, type Schema } from 'src/utils/rules'
 
-interface FormData {
-  email: string
-  password: string
-  confirm_password: string
-}
+type FormData = Schema
 
 export default function Register() {
   const {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<FormData>()
+  } = useForm<FormData>({
+    resolver: yupResolver(schema)
+  })
 
   const onSubmit = handleSubmit((data) => {
-    console.log(data)
+    // console.log(data)
   })
 
   return (
@@ -27,7 +27,31 @@ export default function Register() {
           <div className='lg:col-span-2 lg:col-start-4'>
             <form className='p-10 rounded bg-white shadow-sm' onSubmit={onSubmit} noValidate>
               <div className='text-2xl'>Đăng ký</div>
-              <div className='mt-8'>
+              <Input
+                name='email'
+                register={register}
+                type='email'
+                className='mt-8'
+                placeholder='Email'
+                errorMessage={errors.email?.message}
+              />
+              <Input
+                name='password'
+                register={register}
+                type='password'
+                className='mt-3'
+                placeholder='Password'
+                errorMessage={errors.password?.message}
+              />
+              <Input
+                name='confirm_password'
+                register={register}
+                type='password'
+                className='mt-3'
+                placeholder='Confirm password'
+                errorMessage={errors.confirm_password?.message}
+              />
+              {/* <div className='mt-8'>
                 <input
                   type='email'
                   className='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm shadow-sm'
@@ -35,28 +59,29 @@ export default function Register() {
                   {...register('email', rules.email as RegisterOptions<FormData, 'email'>)}
                 />
                 <div className='mt-1 text-red-600 min-h-[1.25rem] text-sm'>{errors.email?.message}</div>
-              </div>
-              <div className='mt-3'>
+              </div> */}
+              {/* <div className='mt-3'>
                 <input
                   type='password'
                   className='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm shadow-sm'
                   placeholder='Password'
+                  autoComplete='on'
                   {...register('password', rules.password as RegisterOptions<FormData, 'password'>)}
                 />
                 <div className='mt-1 text-red-600 min-h-[1rem] text-sm'>{errors.password?.message}</div>
-              </div>
-              <div className='mt-3'>
+              </div> */}
+              {/* <div className='mt-3'>
                 <input
                   type='password'
                   className='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm shadow-sm'
                   placeholder='Confirm password'
-                  {...register(
-                    'confirm_password',
-                    rules.confirm_password as RegisterOptions<FormData, 'confirm_password'>
-                  )}
+                  autoComplete='on'
+                  {...register('confirm_password', {
+                    ...(rules.confirm_password as RegisterOptions<FormData, 'confirm_password'>)
+                  })}
                 />
                 <div className='mt-1 text-red-600 min-h-[1rem] text-sm'>{errors.confirm_password?.message}</div>
-              </div>
+              </div> */}
               <div className='mt-3'>
                 <button className='w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600 focus:border-gray-500'>
                   Đăng ký

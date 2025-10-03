@@ -12,10 +12,10 @@ export default function Login() {
   const onSubmit = handleSubmit((data) => {
     console.log(data)
   })
-  
+
   return (
     <div className='bg-[#ee4d2d]'>
-      <div className='max-w-7xl mx-auto px-4'>
+      <div className='max-w-7xl mx-auto px-4 container'>
         <div className='grid grid-cols-1 lg:grid-cols-5 lg:py-32 lg:pr-10 py-12'>
           <div className='lg:col-span-2 lg:col-start-4'>
             <form className='p-10 rounded bg-white shadow-sm' onSubmit={onSubmit}>
@@ -33,6 +33,7 @@ export default function Login() {
                 <input
                   type='password'
                   name='password'
+                  autoComplete='on'
                   className='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm shadow-sm'
                   placeholder='Password'
                 />

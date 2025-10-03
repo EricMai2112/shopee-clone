@@ -40,6 +40,7 @@ module.exports = {
     'react/jsx-no-target-blank': 'warn',
     // Tăng cường một số rule prettier (copy từ file .prettierrc qua)
     '@typescript-eslint/no-unused-vars': 'warn',
+
     'prettier/prettier': [
       'warn',
       {
