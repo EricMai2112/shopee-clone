@@ -35,7 +35,6 @@ export default function Register() {
       onError: (error) => {
         if (isAxiosUnprocessableEntity<ResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
           const formError = error.response?.data.data
-
           //Đây là cách làm tay đối với những trường hợp có ít input
           // if (formError?.email) {
           //   setError('email', {
