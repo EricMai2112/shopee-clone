@@ -1,16 +1,52 @@
 import React from 'react'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { schema, type Schema } from 'src/utils/rules'
+
+import { loginAccount } from 'src/apis/auth.api'
+import { useMutation } from '@tanstack/react-query'
+import { omit } from 'lodash'
+import { isAxiosUnprocessableEntity } from 'src/utils/utils'
+import type { ResponseApi } from 'src/types/util.type'
+import Input from 'src/components/Input'
+
+type FormData = Omit<Schema, 'confirm_password'>
+const loginSchema = schema.omit(['confirm_password'])
 
 export default function Login() {
   const {
     register,
+    setError,
     handleSubmit,
     formState: { errors }
-  } = useForm()
+  } = useForm<FormData>({
+    resolver: yupResolver(loginSchema)
+  })
+
+  const loginAccountMutation = useMutation({
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => loginAccount(body)
+  })
 
   const onSubmit = handleSubmit((data) => {
-    console.log(data)
+    loginAccountMutation.mutate(data, {
+      onSuccess: (data) => {
+        console.log(data)
+      },
+      onError: (error) => {
+        if (isAxiosUnprocessableEntity<ResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
+          const formError = error.response?.data.data
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof FormData, {
+                message: formError[key as keyof FormData],
+                type: 'Server'
+              })
+            })
+          }
+        }
+      }
+    })
   })
 
   return (
@@ -18,27 +54,24 @@ export default function Login() {
       <div className='max-w-7xl mx-auto px-4 container'>
         <div className='grid grid-cols-1 lg:grid-cols-5 lg:py-32 lg:pr-10 py-12'>
           <div className='lg:col-span-2 lg:col-start-4'>
-            <form className='p-10 rounded bg-white shadow-sm' onSubmit={onSubmit}>
+            <form className='p-10 rounded bg-white shadow-sm' onSubmit={onSubmit} noValidate>
               <div className='text-2xl'>Đăng nhập</div>
-              <div className='mt-8'>
-                <input
-                  type='email'
-                  name='email'
-                  className='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm shadow-sm'
-                  placeholder='Email'
-                />
-                <div className='mt-1 text-red-600 min-h-[1rem] text-sm'></div>
-              </div>
-              <div className='mt-3'>
-                <input
-                  type='password'
-                  name='password'
-                  autoComplete='on'
-                  className='p-3 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm shadow-sm'
-                  placeholder='Password'
-                />
-                <div className='mt-1 text-red-600 min-h-[1rem] text-sm'></div>
-              </div>
+              <Input
+                name='email'
+                register={register}
+                type='email'
+                className='mt-8'
+                placeholder='Email'
+                errorMessage={errors.email?.message}
+              />
+              <Input
+                name='password'
+                register={register}
+                type='password'
+                className='mt-3'
+                placeholder='Password'
+                errorMessage={errors.password?.message}
+              />
               <div className='mt-3'>
                 <button
                   type='submit'
