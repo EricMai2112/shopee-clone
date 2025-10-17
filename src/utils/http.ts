@@ -1,10 +1,15 @@
 import type { AxiosError, AxiosInstance } from 'axios'
 import axios, { HttpStatusCode } from 'axios'
 import { toast } from 'react-toastify'
+import type { AuthResponse } from 'src/types/auth.type'
+import { clearAccessTokenFromLS, getAccessTokenFromLS, saveAccessTokenToLS } from './auth'
 
 class Http {
   instance: AxiosInstance
+  //tao accesstoken de toi uu hieu suat, chay tren ram nhanh hon tren o cung
+  private accessToken: string
   constructor() {
+    this.accessToken = getAccessTokenFromLS()
     this.instance = axios.create({
       baseURL: 'https://api-ecom.duthanhduoc.com',
       timeout: 10000,
@@ -12,8 +17,35 @@ class Http {
         'Content-Type': 'application/json'
       }
     })
+    //luu accesstoken thong qua headers voi key la authorization
+    this.instance.interceptors.request.use(
+      (config) => {
+        if (this.accessToken && config.headers) {
+          config.headers.Authorization = this.accessToken
+          return config
+        }
+        return config
+      },
+      (error) => {
+        return Promise.reject(error)
+      }
+    )
+
     this.instance.interceptors.response.use(
-      function (response) {
+      (response) => {
+        const { url } = response.config
+        //login or register thi luu accesstoken
+        if (url == '/login' || url == '/register') {
+          this.accessToken = (response.data as AuthResponse).data?.access_token
+          saveAccessTokenToLS(this.accessToken)
+        } else {
+          //logout thi xoa
+          if (url == '/logout') {
+            this.accessToken = ''
+            clearAccessTokenFromLS()
+          }
+        }
+
         return response
       },
       function (error: AxiosError) {
