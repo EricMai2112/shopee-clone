@@ -5,6 +5,7 @@ import React, { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { registerAccount } from 'src/apis/auth.api'
+import Button from 'src/components/Button'
 import Input from 'src/components/Input'
 import { AppContext } from 'src/contexts/app.context'
 import type { ErrorResponse } from 'src/types/util.type'
@@ -130,9 +131,13 @@ export default function Register() {
                 <div className='mt-1 text-red-600 min-h-[1rem] text-sm'>{errors.confirm_password?.message}</div>
               </div> */}
               <div className='mt-3'>
-                <button className='w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600 focus:border-gray-500'>
+                <Button
+                  className='w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600 focus:border-gray-500 flex justify-center items-center'
+                  isLoading={registerAccountMutation.isPending}
+                  disabled={registerAccountMutation.isPending}
+                >
                   Đăng ký
-                </button>
+                </Button>
               </div>
 
               <div className='flex items-center justify-center mt-8'>
