@@ -4,13 +4,13 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { schema, type Schema } from 'src/utils/rules'
 
-import { loginAccount } from 'src/apis/auth.api'
 import { useMutation } from '@tanstack/react-query'
 import { isAxiosUnprocessableEntity } from 'src/utils/utils'
 import type { ErrorResponse } from 'src/types/util.type'
 import Input from 'src/components/Input'
 import { AppContext } from 'src/contexts/app.context'
 import Button from 'src/components/Button'
+import authApi from 'src/apis/auth.api'
 
 type FormData = Omit<Schema, 'confirm_password'>
 const loginSchema = schema.omit(['confirm_password'])
@@ -29,7 +29,7 @@ export default function Login() {
   })
 
   const loginAccountMutation = useMutation({
-    mutationFn: (body: Omit<FormData, 'confirm_password'>) => loginAccount(body)
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => authApi.loginAccount(body)
   })
 
   const onSubmit = handleSubmit((data) => {
