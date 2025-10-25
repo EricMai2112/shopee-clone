@@ -1,5 +1,5 @@
 import React from 'react'
-import type { QueryConfig } from '../../ProductList/ProductList'
+import type { QueryConfig } from '../../ProductList'
 import { sortBy, order as orderConstant } from 'src/constants/product'
 import classNames from 'classnames'
 import type { ProductListConfig } from 'src/types/product.type'
