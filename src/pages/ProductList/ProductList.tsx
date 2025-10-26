@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import AsideFilter from './components/AsideFilter'
 import SortProductList from './components/SortProductList'
 import Product from './components/Product/Product'
@@ -47,10 +46,9 @@ export default function ProductList() {
     }
   })
 
-  console.log(categoriesData)
   return (
     <div className='bg-gray-200 py-6 '>
-      <div className='max-w-7xl mx-auto px-4'>
+      <div className=''>
         {productsData && (
           <div className='grid grid-cols-12 gap-6'>
             <div className='col-span-3'>
