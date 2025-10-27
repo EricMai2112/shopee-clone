@@ -1,6 +1,6 @@
 import { createSearchParams, Link, useNavigate } from 'react-router-dom'
 import Popover from '../Popover'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { AppContext } from 'src/contexts/app.context'
 import path from 'src/constants/path'
@@ -10,10 +10,14 @@ import { useForm } from 'react-hook-form'
 import { schema, type Schema } from 'src/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { omit } from 'lodash'
+import purchaseApi from 'src/apis/purchase.api'
+import { formatCurrency } from 'src/utils/utils'
+import { purchasesStatus } from 'src/constants/purchase'
 
 type FormData = Pick<Schema, 'name'>
 
 const nameSchema = schema.pick(['name'])
+const MAX_PURCHASES = 5
 
 export default function Header() {
   const queryConfig = useQueryConfig()
@@ -59,6 +63,13 @@ export default function Header() {
       search: createSearchParams(config).toString()
     })
   })
+
+  const { data: purchasesInCartData } = useQuery({
+    queryKey: ['purchases', { status: purchasesStatus.inCart }],
+    queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart })
+  })
+
+  const purchasesInCart = purchasesInCartData?.data.data
 
   return (
     <div className='pb-5 pt-2 bg-[linear-gradient(-180deg,_#f53d2d,_#f63)] text-white'>
@@ -189,72 +200,45 @@ export default function Header() {
             <Popover
               renderPopover={
                 <div className='bg-white relative shadow-md rounded-sm border border-gray-200 max-w-[400px] text-sm'>
-                  <div className='p-2'>
-                    <div className='text-gray-400 capitalize'>Sản phẩm mới thêm</div>
-                    <div className='mt-5'>
-                      <div className='mt-4 flex'>
-                        <div className='flex-shrink-0'>
-                          <img
-                            src='https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-m02gknyavm33f4_tn'
-                            alt='anh'
-                            className='w-11 h-11 object-cover'
-                          />
-                        </div>
-                        <div className='flex-grow ml-2 overflow-hidden'>
-                          <div className='truncate'>
-                            Áo Len Nam Nữ Kéo Khóa Cổ Trụ SUKIYA Form Rộng Phong Cách Hàn Quốc AL82
+                  {purchasesInCart ? (
+                    <div className='p-2'>
+                      <div className='text-gray-400 capitalize'>Sản phẩm mới thêm</div>
+                      <div className='mt-5'>
+                        {purchasesInCart.slice(0, MAX_PURCHASES).map((purchase) => (
+                          <div className='mt-2 p-2 flex hover:bg-gray-100'>
+                            <div className='flex-shrink-0'>
+                              <img
+                                src={purchase.product.image}
+                                alt={purchase.product.name}
+                                className='w-11 h-11 object-cover'
+                              />
+                            </div>
+                            <div className='flex-grow ml-2 overflow-hidden'>
+                              <div className='truncate'>{purchase.product.name}</div>
+                            </div>
+                            <div className='ml-2 flex-shrink-0'>
+                              <span className='text-[#ee4d2d]'>₫{formatCurrency(purchase.product.price)}</span>
+                            </div>
                           </div>
-                        </div>
-                        <div className='ml-2 flex-shrink-0'>
-                          <span className='text-[#ee4d2d]'>224.250₫</span>
-                        </div>
+                        ))}
                       </div>
-                      <div className='mt-4 flex'>
-                        <div className='flex-shrink-0'>
-                          <img
-                            src='https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-m02gknyavm33f4_tn'
-                            alt='anh'
-                            className='w-11 h-11 object-cover'
-                          />
+                      <div className='flex mt-6 items-center justify-between'>
+                        <div className='capitalize text-xs'>
+                          {purchasesInCart.length > MAX_PURCHASES ? purchasesInCart.length - MAX_PURCHASES : ''} thêm
+                          vào giỏ hàng
                         </div>
-                        <div className='flex-grow ml-2 overflow-hidden'>
-                          <div className='truncate'>
-                            Áo Len Nam Nữ Kéo Khóa Cổ Trụ SUKIYA Form Rộng Phong Cách Hàn Quốc AL82
-                          </div>
-                        </div>
-                        <div className='ml-2 flex-shrink-0'>
-                          <span className='text-[#ee4d2d]'>224.250₫</span>
-                        </div>
-                      </div>
-                      <div className='mt-4 flex'>
-                        <div className='flex-shrink-0'>
-                          <img
-                            src='https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-m02gknyavm33f4_tn'
-                            alt='anh'
-                            className='w-11 h-11 object-cover'
-                          />
-                        </div>
-                        <div className='flex-grow ml-2 overflow-hidden'>
-                          <div className='truncate'>
-                            Áo Len Nam Nữ Kéo Khóa Cổ Trụ SUKIYA Form Rộng Phong Cách Hàn Quốc AL82
-                          </div>
-                        </div>
-                        <div className='ml-2 flex-shrink-0'>
-                          <span className='text-[#ee4d2d]'>224.250₫</span>
-                        </div>
+                        <button className='capitalize  cursor-pointer px-4 py-2 bg-[rgba(238,77,45,1)] hover:bg-[rgba(238,77,45,0.9)] rounded-sm text-white'>
+                          Xem giỏ hàng
+                        </button>
                       </div>
                     </div>
-                    <div className='flex mt-6 items-center justify-between'>
-                      <div className='capitalize text-xs'>Thêm vào giỏ hàng</div>
-                      <button className='capitalize  cursor-pointer px-4 py-2 bg-[rgba(238,77,45,1)] hover:bg-[rgba(238,77,45,0.9)] rounded-sm text-white'>
-                        Xem giỏ hàng
-                      </button>
-                    </div>
-                  </div>
+                  ) : (
+                    <div className='p-2 w-[300px] h-[300px] flex items-center justify-center'>Chưa có sản phẩm</div>
+                  )}
                 </div>
               }
             >
-              <Link to='/'>
+              <Link to='/' className='relative'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
@@ -269,6 +253,9 @@ export default function Header() {
                     d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z'
                   />
                 </svg>
+                <span className='absolute top-[-5px] left-[17px] rounded-full px-[9px] py-[1px] bg-white text-[#ee4d2d] text-xs'>
+                  {purchasesInCart?.length}
+                </span>
               </Link>
             </Popover>
           </div>
