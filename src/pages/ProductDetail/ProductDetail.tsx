@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
-import React, { useEffect, useMemo, useState } from 'react'
+import { unset } from 'lodash'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import productApi from 'src/apis/product.api'
 import InputNumber from 'src/components/InputNumber'
@@ -18,6 +19,7 @@ export default function ProductDetail() {
   const product = productDetailData?.data.data
   const [currentIndexImage, setCurrentIndexImage] = useState([0, 5])
   const [activeImage, setActiveImage] = useState('')
+  const imageRef = useRef<HTMLImageElement>(null)
   const currentImages = useMemo(
     () => (product ? product.images.slice(...currentIndexImage) : []),
     [product, currentIndexImage]
@@ -45,6 +47,26 @@ export default function ProductDetail() {
     setActiveImage(image)
   }
 
+  const handleZoom = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    //Lấy thông số của thẻ div
+    const rect = event.currentTarget.getBoundingClientRect()
+    const image = imageRef.current as HTMLImageElement
+    //Lấy thông số khi di chuột tới đâu đó
+    const { offsetX, offsetY } = event.nativeEvent
+    const { naturalWidth, naturalHeight } = image
+    const top = offsetY * (1 - naturalHeight / rect.height)
+    const left = offsetX * (1 - naturalWidth / rect.width)
+    image.style.width = naturalWidth + 'px'
+    image.style.height = naturalHeight + 'px'
+    image.style.maxWidth = 'unset'
+    image.style.top = top + 'px'
+    image.style.left = left + 'px'
+  }
+
+  const handleRemoveZoom = () => {
+    imageRef.current?.removeAttribute('style')
+  }
+
   if (!product) return null
 
   return (
@@ -53,11 +75,17 @@ export default function ProductDetail() {
         <div className='bg-white p-4 shadow'>
           <div className='grid grid-cols-12 gap-9'>
             <div className='col-span-5'>
-              <div className='relative w-full pt-[100%] shadow'>
+              <div
+                className='relative w-full pt-[100%] shadow overflow-hidden cursor-zoom-in'
+                onMouseMove={handleZoom}
+                onMouseLeave={handleRemoveZoom}
+              >
                 <img
                   src={activeImage}
                   alt={product.name}
-                  className='absolute top-0 left-0 bg-white w-full h-full object-cover'
+                  //pointer-events-none để ngăn chặn bubble event khi lấy thông số của thẻ div, tránh hiện tượng giật và lộn xộn element
+                  className='absolute pointer-events-none top-0 left-0 bg-white w-full h-full object-cover '
+                  ref={imageRef}
                 />
               </div>
               <div className='relative mt-4 grid grid-cols-5 gap-1'>
