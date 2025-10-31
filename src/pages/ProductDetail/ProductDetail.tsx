@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import productApi from 'src/apis/product.api'
 import ProductRating from 'src/components/ProductRating'
 import type { Product as ProductType } from 'src/types/product.type'
@@ -12,9 +12,11 @@ import QuantityController from 'src/components/QuantityController'
 import purchaseApi from 'src/apis/purchase.api'
 import { toast } from 'react-toastify'
 import { purchasesStatus } from 'src/constants/purchase'
+import path from 'src/constants/path'
 
 export default function ProductDetail() {
   const [buyCount, setBuyCount] = useState(1)
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)
@@ -102,6 +104,14 @@ export default function ProductDetail() {
         }
       }
     )
+  }
+
+  const handleBuyNow = async () => {
+    const res = await addToCartMutation.mutateAsync({ buy_count: buyCount, product_id: product._id })
+    const purchase = res.data.data
+    navigate(path.cart, {
+      state: { purchaseId: purchase._id }
+    })
   }
 
   if (!product) return null
@@ -209,7 +219,7 @@ export default function ProductDetail() {
               </div>
               <div className='mt-8 flex items-center'>
                 <button
-                  className='flex h-12 items-center justify-center rounded-sm border-[#ee4d2d] bg-[#ee4d2d]/10 px-5 capitalize text-[#ee4d2d] shadow-sm hover:bg-[#ee4d2d]/5'
+                  className='flex h-12 items-center justify-center rounded-sm border-[#ee4d2d] cursor-pointer bg-[#ee4d2d]/10 px-5 capitalize text-[#ee4d2d] shadow-sm hover:bg-[#ee4d2d]/5'
                   onClick={addToCart}
                 >
                   <svg
@@ -228,7 +238,10 @@ export default function ProductDetail() {
                   </svg>
                   Thêm vào giỏ hàng
                 </button>
-                <button className='ml-4 flex h-12 min-w-[5rem] items-center justify-center rounded-sm bg-[#ee4d2d] px-5 capitalize text-white shadow-sm outline-none hover:bg-[#ee4d2d]/90 '>
+                <button
+                  onClick={handleBuyNow}
+                  className='ml-4 flex h-12 min-w-[5rem] items-center justify-center cursor-pointer rounded-sm bg-[#ee4d2d] px-5 capitalize text-white shadow-sm outline-none hover:bg-[#ee4d2d]/90 '
+                >
                   Mua ngay
                 </button>
               </div>
