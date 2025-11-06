@@ -9,7 +9,7 @@ export default function Profile() {
         <div className='mt-1 text-sm text-gray-700'>Quản lý thông tin hồ sơ để bảo mật tài khoản</div>
       </div>
       <div className='mt-8 flex flex-col-reverse md:flex-row md:items-start'>
-        <form className='mt-6 flex-row md:pr-12 md:mt-0'>
+        <form className='mt-6 flex-row md:pr-12 md:mt-0 md:w-2/3'>
           <div className='flex flex-wrap flex-col sm:flex-row'>
             <div className='sm:w-[20%] truncate pt-3 sm:text-right capitalize'>Email</div>
             <div className='sm:w-[80%] sm:pl-5'>
@@ -51,7 +51,7 @@ export default function Profile() {
             </div>
           </div>
         </form>
-        <div className='flex justify-center md:w-72 md:border-l md:border-l-gray-200'>
+        <div className='flex justify-center md:w-1/3 md:border-l md:border-l-gray-200'>
           <div className='flex flex-col items-center'>
             <div className='my-5 h-24 w-24'>
               <img
