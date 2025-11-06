@@ -43,6 +43,14 @@ export default function Register() {
       onError: (error) => {
         if (isAxiosUnprocessableEntity<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
           const formError = error.response?.data.data
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof Omit<FormData, 'confirm_password'>, {
+                message: formError[key as keyof Omit<FormData, 'confirm_password'>],
+                type: 'Server'
+              })
+            })
+          }
           //Đây là cách làm tay đối với những trường hợp có ít input
           // if (formError?.email) {
           //   setError('email', {
@@ -57,14 +65,6 @@ export default function Register() {
           //   })
           // }
           //Nếu nhiều input, nhiều trường thì làm cách dưới
-          if (formError) {
-            Object.keys(formError).forEach((key) => {
-              setError(key as keyof Omit<FormData, 'confirm_password'>, {
-                message: formError[key as keyof Omit<FormData, 'confirm_password'>],
-                type: 'Server'
-              })
-            })
-          }
         }
       }
     })
