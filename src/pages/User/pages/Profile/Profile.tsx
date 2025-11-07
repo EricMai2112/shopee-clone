@@ -13,6 +13,7 @@ import { AppContext } from 'src/contexts/app.context'
 import { setProfileFromLS } from 'src/utils/auth'
 import { isAxiosUnprocessableEntity } from 'src/utils/utils'
 import type { ErrorResponse } from 'src/types/util.type'
+import config from 'src/constants/config'
 
 type FormData = Pick<UserSchema, 'name' | 'address' | 'phone' | 'date_of_birth' | 'avatar'>
 type FormDataError = Omit<FormData, 'date_of_birth'> & {
@@ -109,7 +110,11 @@ export default function Profile() {
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileFromLocal = event.target.files?.[0]
-    setFile(fileFromLocal)
+    if (fileFromLocal && (fileFromLocal.size >= config.maxSizeUpLoadAvatar || !fileFromLocal.type.includes('image'))) {
+      toast.error('File hình ảnh phải < 1MB')
+    } else {
+      setFile(fileFromLocal)
+    }
   }
 
   const handleUpload = () => {
@@ -199,7 +204,14 @@ export default function Profile() {
             <div className='my-5 h-24 w-24'>
               <img src={previewImage || profile?.avatar} alt='' className='w-full h-full rounded-full object-cover' />
             </div>
-            <input className='hidden' type='file' accept='.jpg,.jpeg,.png' ref={fileInputRef} onChange={onFileChange} />
+            <input
+              className='hidden'
+              type='file'
+              accept='.jpg,.jpeg,.png'
+              ref={fileInputRef}
+              onChange={onFileChange}
+              onClick={(event) => (event.target.value = null)}
+            />
             <button
               className='flex h-10 cursor-pointer items-center justify-end rounded-sm border border-gray-300 hover:border-gray-500 transition-colors bg-white px-6 text-sm text-gray-600 shadow-sm'
               onClick={handleUpload}
