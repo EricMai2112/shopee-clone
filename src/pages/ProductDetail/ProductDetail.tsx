@@ -25,7 +25,7 @@ export default function ProductDetail() {
     queryFn: () => productApi.getProductDetail(id as string)
   })
 
-  const product = productDetailData?.data.data as ProductType
+  const product = productDetailData?.data.data
   const [currentIndexImage, setCurrentIndexImage] = useState([0, 5])
   const [activeImage, setActiveImage] = useState('')
   const imageRef = useRef<HTMLImageElement>(null)
