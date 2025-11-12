@@ -77,7 +77,10 @@ export default function NavHeader() {
                 >
                   Tài khoản của tôi
                 </Link>
-                <Link to='/' className='py-3 px-3 hover:text-[#ee4d2d] hover:bg-slate-100 cursor-pointer text-left'>
+                <Link
+                  to={path.historyPurchase}
+                  className='py-3 px-3 hover:text-[#ee4d2d] hover:bg-slate-100 cursor-pointer text-left'
+                >
                   Đơn mua
                 </Link>
                 <button

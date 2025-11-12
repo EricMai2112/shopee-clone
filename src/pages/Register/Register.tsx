@@ -90,6 +90,7 @@ export default function Register() {
                 register={register}
                 type='password'
                 className='mt-3'
+                classNameEye='top-[12px]'
                 placeholder='Password'
                 errorMessage={errors.password?.message}
               />
@@ -98,6 +99,7 @@ export default function Register() {
                 register={register}
                 type='password'
                 className='mt-3'
+                classNameEye='top-[12px]'
                 placeholder='Confirm password'
                 errorMessage={errors.confirm_password?.message}
               />
