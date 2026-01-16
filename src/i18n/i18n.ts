@@ -22,7 +22,7 @@ i18next.use(initReactI18next).init({
   resources,
   lng: 'vi',
   ns: ['home', 'product'],
-  fallBackLng: 'vi',
+  fallbackLng: 'vi',
   defaultNS,
   interpolation: {
     escapeValue: false

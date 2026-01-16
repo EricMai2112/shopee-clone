@@ -31,7 +31,8 @@ export default function InputFile({ onChange }: Props) {
         accept='.jpg,.jpeg,.png'
         ref={fileInputRef}
         onChange={onFileChange}
-        onClick={(event) => (event.target.value = null)}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onClick={(event) => ((event.target as any).value = null)}
       />
       <button
         className='flex h-10 cursor-pointer items-center justify-end rounded-sm border border-gray-300 hover:border-gray-500 transition-colors bg-white px-6 text-sm text-gray-600 shadow-sm'

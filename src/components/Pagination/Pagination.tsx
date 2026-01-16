@@ -1,8 +1,8 @@
 import React from 'react'
 import { createSearchParams, Link } from 'react-router-dom'
 import classNames from 'classnames'
-import type { QueryConfig } from 'src/pages/ProductList/ProductList'
 import path from 'src/constants/path'
+import type { QueryConfig } from 'src/hooks/useQueryConfig'
 
 interface Props {
   queryConfig: QueryConfig
@@ -84,7 +84,7 @@ export default function Pagination({ queryConfig, pageSize }: Props) {
           className='bg-white rounded px-3 py-2 shadow-sm mx-2 cursor-pointer '
         >
           Prev
-        </Link>  
+        </Link>
       )}
 
       {renderPagination()}

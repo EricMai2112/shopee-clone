@@ -1,12 +1,10 @@
-import React from 'react'
 import { createSearchParams, Link, useNavigate } from 'react-router-dom'
 import Button from 'src/components/Button'
-import Input from 'src/components/Input'
 import path from 'src/constants/path'
 import type { Category } from 'src/types/category.type'
 import classNames from 'classnames'
 import InputNumber from 'src/components/InputNumber'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, type Resolver } from 'react-hook-form'
 import { schema, type Schema } from 'src/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
 import type { NoUndefinedField } from 'src/types/util.type'
@@ -38,7 +36,7 @@ export default function AsideFilter({ categories, queryConfig }: Props) {
       price_min: '',
       price_max: ''
     },
-    resolver: yupResolver(priceSchema),
+    resolver: yupResolver(priceSchema) as Resolver<FormData>,
     shouldFocusError: false
   })
 

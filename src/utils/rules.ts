@@ -128,6 +128,20 @@ export const profileSchema = yup.object({
   date_of_birth: yup.date().max(new Date(), 'Hãy chọn 1 ngày trong quá khứ')
 })
 
+export const priceSchema = yup.object({
+  price_min: yup.string().notRequired().test({
+    name: 'price-not-allowed',
+    message: 'Giá không phù hợp',
+    test: testPriceMinMax
+  }),
+
+  price_max: yup.string().notRequired().test({
+    name: 'price-not-allowed',
+    message: 'Giá không phù hợp',
+    test: testPriceMinMax
+  })
+})
+
 export type UserSchema = yup.InferType<typeof userSchema>
 
 export type Schema = yup.InferType<typeof schema>
@@ -135,3 +149,5 @@ export type Schema = yup.InferType<typeof schema>
 export type ProfileSchema = yup.InferType<typeof profileSchema>
 
 export type ChangePasswordSchema = yup.InferType<typeof changePasswordSchema>
+
+export type PriceSchema = yup.InferType<typeof priceSchema>
