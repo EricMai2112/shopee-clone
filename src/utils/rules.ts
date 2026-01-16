@@ -114,6 +114,24 @@ export const userSchema = yup.object({
   confirm_password: handleConfirmPasswordYup('new_password')
 })
 
+export const changePasswordSchema = yup.object({
+  password: yup.string().required('Mật khẩu cũ là bắt buộc').min(6).max(160),
+  new_password: yup.string().required('Mật khẩu mới là bắt buộc').min(6).max(160),
+  confirm_password: handleConfirmPasswordYup('new_password')
+})
+
+export const profileSchema = yup.object({
+  name: yup.string().max(160, 'Độ dài tối đa 160 kí tự'),
+  phone: yup.string().max(20, 'Độ dài tối đa 20 kí tự'),
+  address: yup.string().max(160, 'Độ dài tối đa 160 kí tự'),
+  avatar: yup.string().max(1000, 'Độ dài tối đa 1000 kí tự'),
+  date_of_birth: yup.date().max(new Date(), 'Hãy chọn 1 ngày trong quá khứ')
+})
+
 export type UserSchema = yup.InferType<typeof userSchema>
 
 export type Schema = yup.InferType<typeof schema>
+
+export type ProfileSchema = yup.InferType<typeof profileSchema>
+
+export type ChangePasswordSchema = yup.InferType<typeof changePasswordSchema>

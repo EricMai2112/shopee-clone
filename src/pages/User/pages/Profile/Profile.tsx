@@ -1,12 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import React, { Fragment, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form'
+import React, { Fragment, useContext, useEffect, useMemo, useState } from 'react'
+import { Controller, FormProvider, useForm, useFormContext, type Resolver } from 'react-hook-form'
 import userApi from 'src/apis/user.api'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
 import InputNumber from 'src/components/InputNumber'
-import { userSchema, type UserSchema } from 'src/utils/rules'
+import { profileSchema, type ProfileSchema, type UserSchema } from 'src/utils/rules'
 import DateSelect from '../../components/DateSelect'
 import { toast } from 'react-toastify'
 import { AppContext } from 'src/contexts/app.context'
@@ -64,7 +64,7 @@ type FormData = Pick<UserSchema, 'name' | 'address' | 'phone' | 'date_of_birth' 
 type FormDataError = Omit<FormData, 'date_of_birth'> & {
   date_of_birth?: string
 }
-const profileSchema = userSchema.pick(['name', 'address', 'phone', 'date_of_birth', 'avatar'])
+// const profileSchema = userSchema.pick(['name', 'address', 'phone', 'date_of_birth', 'avatar'])
 
 export default function Profile() {
   const { setProfile } = useContext(AppContext)
@@ -73,7 +73,7 @@ export default function Profile() {
     return file ? URL.createObjectURL(file) : ''
   }, [file])
 
-  const methods = useForm<FormData>({
+  const methods = useForm<ProfileSchema>({
     defaultValues: {
       name: '',
       phone: '',
@@ -81,7 +81,7 @@ export default function Profile() {
       avatar: '',
       date_of_birth: new Date(1990, 0, 1)
     },
-    resolver: yupResolver(profileSchema)
+    resolver: yupResolver(profileSchema) as Resolver<ProfileSchema>
   })
 
   const {

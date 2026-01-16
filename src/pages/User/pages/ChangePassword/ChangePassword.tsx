@@ -8,12 +8,11 @@ import userApi from 'src/apis/user.api'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
 import type { ErrorResponse } from 'src/types/util.type'
-import { userSchema, type UserSchema } from 'src/utils/rules'
+import { changePasswordSchema, type ChangePasswordSchema, type UserSchema } from 'src/utils/rules'
 import { isAxiosUnprocessableEntity } from 'src/utils/utils'
 
 type FormData = Pick<UserSchema, 'password' | 'new_password' | 'confirm_password'>
 
-const passwordSchema = userSchema.pick(['password', 'new_password', 'confirm_password'])
 export default function ChangePassword() {
   const {
     register,
@@ -21,13 +20,13 @@ export default function ChangePassword() {
     handleSubmit,
     setError,
     reset
-  } = useForm<FormData>({
+  } = useForm<ChangePasswordSchema>({
     defaultValues: {
       password: '',
       new_password: '',
       confirm_password: ''
     },
-    resolver: yupResolver(passwordSchema)
+    resolver: yupResolver(changePasswordSchema)
   })
 
   const updateProfileMutation = useMutation({
@@ -46,7 +45,7 @@ export default function ChangePassword() {
         if (formError) {
           Object.keys(formError).forEach((key) => {
             setError(key as keyof Omit<FormData, 'confirm_password'>, {
-              message: formError[key as keyof Omit<FormData, 'confirm_password'>],
+              message: formError[key as keyof Omit<FormData, 'confirm_password'>] as string,
               type: 'Server'
             })
           })

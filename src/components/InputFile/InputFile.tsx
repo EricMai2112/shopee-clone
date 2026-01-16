@@ -3,14 +3,14 @@ import { toast } from 'react-toastify'
 import config from 'src/constants/config'
 
 interface Props {
-  onChange?: (file?: File) => void
+  onChange?: (file: File) => void
 }
 
 export default function InputFile({ onChange }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<File>()
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const fileFromLocal = event.target.files?.[0]
+    const fileFromLocal = event.target.files?.[0] as File
     if (fileFromLocal && (fileFromLocal.size >= config.maxSizeUpLoadAvatar || !fileFromLocal.type.includes('image'))) {
       toast.error('File hình ảnh phải < 1MB')
     } else {
